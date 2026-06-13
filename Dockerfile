@@ -15,12 +15,16 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-backend
 
 WORKDIR /usr/app
 
+# Cacheo de dependencias NuGet (equivalente al npm ci del frontend)
+COPY backend/*.csproj ./
+RUN dotnet restore
+
 COPY backend/ ./
 RUN dotnet publish -c Release -o out
 
 
-# Etapa 3: Imagen final
-FROM mcr.microsoft.com/dotnet/sdk:8.0
+# Etapa 3: Imagen final (solo runtime, sin SDK)
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
 
 WORKDIR /app
 
